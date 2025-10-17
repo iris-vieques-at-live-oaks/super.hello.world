@@ -1,5 +1,5 @@
-inventory = {peripheral.find(peripheral.hasType("inventory"))}
+local inventory = {peripheral.find(peripheral.hasType("inventory"))}
 
-for k, v in ipairs(fruits) do
+for k, v in ipairs(inventory) do
     print(k, v)
 end
