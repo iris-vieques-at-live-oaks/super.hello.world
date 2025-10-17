@@ -1,0 +1,7 @@
+print("What would you like your hostname to be?")
+print("> ")
+local input = read()
+rednet.host("vMail", input)
+local file = fs.open("/rom/autorun/vMail.txt", "w")
+file.write("rednet.host('vMail'," .. input ..  ")")
+file.close()
