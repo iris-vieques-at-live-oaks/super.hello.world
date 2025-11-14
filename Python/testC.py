@@ -4,9 +4,13 @@ import typing
 
 import urwid
 
+import os
+
 if typing.TYPE_CHECKING:
     from collections.abc import Callable, Hashable, Iterable
 
+
+clear = lambda: os.system('clear')
 
 def menu_button(
     caption: str | tuple[Hashable, str] | list[str | tuple[Hashable, str]],
@@ -41,13 +45,22 @@ def item_chosen(button: urwid.Button) -> None:
     done = menu_button("Ok", exit_program)
     top.open_box(urwid.Filler(urwid.Pile([response, done])))
 
+def appearence_chosen(button: urwid.button) -> None:
+    response = urwid.Text(["You chose ", button.label, "\n"])
+    done = menu_button("Cycle appearence", cycle_appearence)
+    top.open_box(urwid.Filler(urwid.Pile([response, done])))
+
 
 def exit_program(button: urwid.Button) -> typing.NoReturn:
     raise urwid.ExitMainLoop()
 
+def cycle_appearence(button: urwid.Button) -> typing.NoReturn:
+    doesCycle = True
+
+
 
 menu_top = menu(
-    "Main Menu",
+    "pyWM OS X",
     [
         sub_menu(
             "Applications",
@@ -66,7 +79,7 @@ menu_top = menu(
             [
                 sub_menu(
                     "Preferences",
-                    [menu_button("Appearance", item_chosen)],
+                    [menu_button("Appearance", appearence_chosen)],
                 ),
                 menu_button("Lock Screen", item_chosen),
             ],
@@ -79,9 +92,14 @@ class CascadingBoxes(urwid.WidgetPlaceholder):
     max_box_levels = 4
 
     def __init__(self, box: urwid.Widget) -> None:
-        super().__init__(urwid.SolidFill("/"))
-        self.box_level = 0
-        self.open_box(box)
+        if doesCycle == True:
+	    super().__init__(urwid.SolidFill("X"))
+            self.box_level = 0
+            self.open_box(box)
+        else:
+	    super().__init__(urwid.SolidFill("/"))
+	    self.box_level = 0
+	    self.open_box(box)
 
     def open_box(self, box: urwid.Widget) -> None:
         self.original_widget = urwid.Overlay(
@@ -112,3 +130,4 @@ class CascadingBoxes(urwid.WidgetPlaceholder):
 top = CascadingBoxes(menu_top)
 urwid.MainLoop(top, palette=[("reversed", "standout", "")]).run()
     
+clear()
